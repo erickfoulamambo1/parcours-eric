@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objectifs - Mon Parcours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f7fb; color: #333; overflow-x: hidden; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .anim-delay-1 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .anim-delay-2 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #fff; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #fff; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #f59e0b; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #f59e0b; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #f59e0b; }
+        .btn-cta { background: #f59e0b; color: #fff; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2); }
+        .btn-cta:hover { background: #b45309; transform: translateY(-2px); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #f59e0b; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #f59e0b; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #f59e0b; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #f59e0b; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #f59e0b; border: none; padding: 0 15px; cursor: pointer; color: #fff; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #b45309; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #f59e0b; color: #fff; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4); }
+
+        /* ===================================================== */
+        /* --- DESIGN SPÉCIFIQUE OBJECTIFS --- */
+        /* ===================================================== */
+        .page-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        .hero-section {
+            background: #fff;
+            border-radius: 30px;
+            padding: 60px 50px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            position: relative;
+        }
+        .hero-text { flex: 1; min-width: 300px; }
+        .hero-text .tag {
+            background: #b45309; color: #fff;
+            padding: 4px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; margin-bottom: 15px;
+        }
+        .hero-text h1 { font-size: 42px; font-weight: 800; color: #b45309; line-height: 1.2; margin-bottom: 15px; }
+        .hero-text h1 span { color: #f59e0b; }
+        .hero-text p { font-size: 16px; color: #666; line-height: 1.7; margin-bottom: 25px; max-width: 450px; }
+        .hero-image { flex: 1; min-width: 250px; text-align: center; position: relative; }
+        .hero-image img { width: 100%; max-width: 350px; border-radius: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.05); border: 2px solid #f0f0f0; }
+        .hero-bg-shape { position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: #f59e0b; border-radius: 50%; opacity: 0.1; z-index: -1; }
+
+        .intro-section { text-align: center; margin-bottom: 40px; padding: 0 20px; }
+        .intro-section h2 { font-size: 32px; color: #b45309; margin-bottom: 15px; }
+        .intro-section h2 span { color: #f59e0b; }
+        .intro-section p { max-width: 700px; margin: 0 auto; color: #666; font-size: 16px; line-height: 1.7; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        .card-item {
+            background: #fff; border-radius: 20px; padding: 30px 20px; text-align: center;
+            border: 1px solid #e4e7eb; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
+        }
+        .card-item:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .card-item .icon {
+            width: 50px; height: 50px; margin: 0 auto 15px auto; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 22px;
+        }
+        .card-item .icon.orange { background: #fef3c7; color: #b45309; }
+        .card-item .icon.blue { background: #eef5ff; color: #007bff; }
+        .card-item .icon.green { background: #e6f7ed; color: #059669; }
+        .card-item h3 { font-size: 18px; color: #b45309; margin-bottom: 8px; }
+        .card-item p { font-size: 14px; color: #666; line-height: 1.5; }
+
+        @media (max-width: 992px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .hero-section { flex-direction: column-reverse; text-align: center; padding: 40px 25px; }
+            .hero-text p { margin: 0 auto 25px auto; }
+            .hero-bg-shape { display: none; }
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 576px) { 
+            nav { display: none; } 
+            .footer-container { grid-template-columns: 1fr; text-align: center; } 
+            .footer-contact-item { justify-content: center; } 
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <h1>Mes <span>Objectifs</span></h1>
+        <p>Les ambitions et les rêves qui guident mon parcours professionnel.</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">4</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="index.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour à l'accueil</a>
+    </div>
+
+    <div class="page-wrapper">
+        
+        <!-- HERO SECTION -->
+        <div class="hero-section anim-fade-in">
+            <div class="hero-text">
+                <div class="tag">AMBITION & CARRIÈRE</div>
+                <h1>Mes <span>Objectifs</span> d'Avenir</h1>
+                <p>Au-delà des notes et des diplômes, je trace la route de mon avenir professionnel. Découvrez mes objectifs à court, moyen et long terme.</p>
+            </div>
+            <div class="hero-image">
+                <div class="hero-bg-shape"></div>
+                <img src="./img/ericPC.jpg" alt="Illustration objectifs">
+            </div>
+        </div>
+
+        <!-- GRILLE DES OBJECTIFS -->
+        <div class="intro-section anim-fade-in anim-delay-1">
+            <h2>Mes <span>objectifs</span> par étapes</h2>
+            <p>Trois horizons pour construire une carrière solide et impactante.</p>
+        </div>
+
+        <div class="cards-grid anim-fade-in anim-delay-2">
+            <div class="card-item">
+                <div class="icon orange"><i class="fa-solid fa-clock"></i></div>
+                <h3>Court Terme (2026-2027)</h3>
+                <p>Obtenir ma Licence 3 avec la mention "Très Bien". Acquérir une première expérience professionnelle en tant que développeur full-stack stagiaire.</p>
+            </div>
+            <div class="card-item">
+                <div class="icon blue"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Moyen Terme (2027-2029)</h3>
+                <p>Maîtriser les frameworks modernes (Laravel, Vue.js). Obtenir une certification en cybersécurité et en gestion de projet Agile.</p>
+            </div>
+            <div class="card-item">
+                <div class="icon green"><i class="fa-solid fa-rocket"></i></div>
+                <h3>Long Terme (2030 et +)</h3>
+                <p>Créer une startup de LegalTech ou d'EduTech pour contribuer à la transformation numérique en RDC. Devenir un acteur majeur de l'innovation technologique en Afrique.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+        fetch('footer.html').then(r => r.text()).then(d => document.getElementById('footer-container').innerHTML = d);
+
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
+        const timerInterval = setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                if(countdownElement) countdownElement.textContent = timeLeft;
+            }
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+                setTimeout(() => { splash.style.display = 'none'; }, 800);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

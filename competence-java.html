@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compétence Java - Mon Parcours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f7fb; color: #333; overflow-x: hidden; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .anim-delay-1 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .anim-delay-2 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN (BIENVENUE JAVA) --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #1e3a5f 0%, #4a6cf7 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #f5a623; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #f5a623; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #4a6cf7; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #4a6cf7; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #4a6cf7; }
+        .btn-cta { background: #4a6cf7; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(74, 108, 247, 0.2); }
+        .btn-cta:hover { background: #2c3e8f; transform: translateY(-2px); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #4a6cf7; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #4a6cf7; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #4a6cf7; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #4a6cf7; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #4a6cf7; border: none; padding: 0 15px; cursor: pointer; color: #fff; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #2c3e8f; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #4a6cf7; color: #fff; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #2c3e8f; transform: translateY(-3px); }
+
+        /* ===================================================== */
+        /* --- DESIGN PAGE DÉTAIL JAVA (Pédagogique) --- */
+        /* ===================================================== */
+        .skill-detail-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .skill-card { 
+            background: linear-gradient(145deg, #f8faff 0%, #eef2ff 100%);
+            border-radius: 20px; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(46, 91, 255, 0.08); 
+            border: 1px solid #dce5f5; 
+        }
+
+        /* IMAGE EN HAUT */
+        .skill-hero-image {
+            width: 100%;
+            height: 300px; 
+            overflow: hidden;
+            position: relative;
+            background: #111;
+        }
+        .skill-hero-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.85;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+        .skill-hero-image:hover img { transform: scale(1.05); opacity: 1; }
+        .hero-badge {
+            position: absolute;
+            bottom: 20px; left: 20px; 
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e8f; padding: 8px 18px; border-radius: 30px;
+            font-size: 13px; font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hero-badge i { color: #f5a623; }
+
+        /* Contenu texte */
+        .skill-content { padding: 45px 50px; }
+        
+        .skill-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+            padding-bottom: 20px; 
+            border-bottom: 2px dashed #dce5f5; 
+        }
+        .skill-header i { 
+            font-size: 44px; 
+            color: #fff; 
+            background: linear-gradient(135deg, #2c3e8f, #4a6cf7); 
+            padding: 12px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.3);
+        }
+        .skill-header h1 { font-size: 34px; color: #1a2555; }
+
+        .skill-content h3 { 
+            color: #2c3e8f; 
+            margin-top: 40px; 
+            margin-bottom: 15px; 
+            font-size: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            background: #fff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            display: inline-flex;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #e4e7eb;
+        }
+        .skill-content h3 i { font-size: 18px; color: #4a6cf7; }
+        .skill-content p { font-size: 16px; line-height: 1.8; color: #444; margin-bottom: 15px; }
+        .skill-content ul { margin-left: 20px; margin-bottom: 20px; line-height: 1.8; color: #444; }
+        .skill-content ul li { margin-bottom: 8px; padding-left: 5px; }
+        .skill-content strong { color: #1a2555; }
+        .skill-content code { background: #eef2ff; padding: 2px 8px; border-radius: 4px; color: #2c3e8f; font-weight: 600; }
+
+        /* Boîtes d'exemples */
+        .example-box {
+            background: #fff;
+            border-left: 4px solid #4a6cf7;
+            padding: 15px 20px;
+            margin: 15px 0 25px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .example-box h4 { color: #1a2555; margin-bottom: 5px; }
+        .example-box p { margin-bottom: 0; font-size: 15px; }
+
+        @media (max-width: 768px) { 
+            .skill-content { padding: 25px; } 
+            .skill-hero-image { height: 180px; }
+        }
+        @media (max-width: 576px) { 
+            nav { display: none; } 
+            .skill-header { flex-direction: column; text-align: center; }
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN (JAVA) -->
+    <div id="splash-screen">
+        <h1>Bienvenue dans le monde du <span>Java</span> !</h1>
+        <p>Le langage qui m'a appris à penser en "Objets".<br>Préparez-vous à structurer vos idées.</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">5</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="projet1.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au projet</a>
+    </div>
+
+    <div class="skill-detail-wrapper">
+        <div class="skill-card anim-fade-in">
+            
+            <!-- IMAGE EN HAUT -->
+            <div class="skill-hero-image">
+                <img src="./img/4 yaya.jpg" alt="Cours Java et Programmation Orientée Objet">
+                <span class="hero-badge"><i class="fa-solid fa-code"></i> Bac 1 - POO</span>
+            </div>
+
+            <div class="skill-content">
+                <div class="skill-header">
+                    <i class="fa-brands fa-java"></i>
+                    <h1>Langage Java & POO</h1>
+                </div>
+
+                <h3><i class="fa-solid fa-arrow-right-arrow-left" style="color:#4a6cf7;"></i> L'étape suivante après le C#</h3>
+                <p>
+                    Quand j'ai fini d'apprendre le C#, je me sentais capable de faire des calculs, des boucles et des conditions. 
+                    Mais je codais encore comme si j'écrivais une liste de courses. Puis le cours de <strong>Java</strong> est arrivé. 
+                    Et là, le professeur a effacé le tableau et a écrit deux mots : <strong>"Classe"</strong> et <strong>"Objet"</strong>. 
+                    C'est à ce moment que j'ai compris : pour construire un vrai logiciel, il faut penser comme un architecte, 
+                    et non comme un simple ouvrier. Java m'a appris à modéliser le monde réel.
+                </p>
+
+                <h3><i class="fa-solid fa-cubes"></i> Les piliers de la POO appris</h3>
+                <ul>
+                    <li><strong>Classes et Objets :</strong> Comprendre la différence entre un plan de maison (la Classe) et la vraie maison construite (l'Objet). Savoir instancier un objet avec <code>new</code>.</li>
+                    <li><strong>Attributs et Méthodes :</strong> Définir ce que l'objet possède (attributs : couleur, taille) et ce qu'il sait faire (méthodes : avancer, parler).</li>
+                    <li><strong>Encapsulation :</strong> Apprentissage des modificateurs d'accès (<code>public</code>, <code>private</code>) pour protéger les données et contrôler leur accès.</li>
+                    <li><strong>Héritage :</strong> Le concept d'héritage permettant à une classe fille d'hériter des propriétés et méthodes d'une classe mère (utilisation du mot clé <code>extends</code>).</li>
+                    <li><strong>Polymorphisme :</strong> La capacité d'un objet à prendre plusieurs formes, notamment via la surcharge et la redéfinition des méthodes.</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-lightbulb" style="color:#4a6cf7;"></i> Exemple concret (La classe "Voiture")</h3>
+                <p>Pour bien comprendre la différence entre une Classe et un Objet, prenons l'exemple d'une voiture :</p>
+                <div class="example-box">
+                    <h4>Classe = Le plan de fabrication</h4>
+                    <p><strong>Voiture</strong> (Le modèle)<br>
+                    - Attributs : <code>couleur</code>, <code>vitesse</code>, <code>nombrePortes</code><br>
+                    - Méthodes : <code>demarrer()</code>, <code>freiner()</code>, <code>klaxonner()</code></p>
+                    <h4 style="margin-top: 10px;">Objet = La vraie voiture construite</h4>
+                    <p><code>Voiture maVoiture = new Voiture();</code><br>
+                    <code>maVoiture.couleur = "Rouge";</code><br>
+                    <code>maVoiture.demarrer();</code></p>
+                </div>
+
+                <h3><i class="fa-solid fa-brain"></i> Pourquoi Java est essentiel</h3>
+                <p>
+                    Contrairement au C# qui était un premier contact avec la logique pure, <strong>Java m'a appris à "penser objet"</strong>. 
+                    Comprendre l'héritage, l'encapsulation et le polymorphisme m'a permis de structurer mes projets de manière plus propre, 
+                    réutilisable et professionnelle. Aujourd'hui, quand je code, je vois des objets qui interagissent, et non plus des lignes qui s'enchaînent. 
+                    C'est la marque d'un vrai développeur.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+
+        // --- COMPTE À REBOURS SPLASH SCREEN CORRIGÉ ---
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 5; // On commence à 5
+
+        const timerInterval = setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                if(countdownElement) countdownElement.textContent = timeLeft;
+            }
+            
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 800); // Attendre la fin de l'animation
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

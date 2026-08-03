@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compétence Prog. Desktop - Mon Parcours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); /* Dégradé Gris/Bleu Pro */
+            color: #333; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes drawConnector { 0% { stroke-dasharray: 0 1000; } 100% { stroke-dasharray: 1000 0; } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .anim-delay-1 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .anim-delay-2 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN (BIENVENUE DESKTOP) --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #f1c40f; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #f1c40f; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #2c3e50; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #2c3e50; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #2c3e50; }
+        .btn-cta { background: #2c3e50; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(44, 62, 80, 0.2); }
+        .btn-cta:hover { background: #1a252f; transform: translateY(-2px); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #2c3e50; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #2c3e50; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #2c3e50; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #2c3e50; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #2c3e50; border: none; padding: 0 15px; cursor: pointer; color: #fff; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #1a252f; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #2c3e50; color: #fff; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #1a252f; transform: translateY(-3px); }
+
+        /* ===================================================== */
+        /* --- DESIGN PAGE DESKTOP --- */
+        /* ===================================================== */
+        .skill-detail-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .skill-card { 
+            background: #ffffff;
+            border-radius: 30px; 
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* IMAGE EN HAUT */
+        .skill-hero-image {
+            width: 100%;
+            height: 250px; 
+            overflow: hidden;
+            position: relative;
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .skill-hero-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.6;
+            transition: transform 0.6s ease;
+        }
+        .skill-hero-image:hover img { transform: scale(1.05); opacity: 0.8; }
+        .hero-badge {
+            position: absolute;
+            bottom: 20px; left: 20px; 
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e50; padding: 8px 18px; border-radius: 30px;
+            font-size: 13px; font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Contenu texte */
+        .skill-content { padding: 50px; }
+        
+        .skill-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px; 
+            border-bottom: 1px solid #e4e7eb;
+        }
+        .skill-header i { 
+            font-size: 50px; 
+            color: #2c3e50; 
+            background: #e8ecf1; 
+            padding: 15px; 
+            border-radius: 15px;
+        }
+        .skill-header h1 { font-size: 36px; color: #2c3e50; }
+
+        .skill-content h3 { 
+            color: #2c3e50; 
+            margin-top: 30px; 
+            margin-bottom: 15px; 
+            font-size: 22px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .skill-content h3 i { font-size: 20px; background: #e8ecf1; padding: 8px; border-radius: 8px; color: #2c3e50; }
+        
+        .skill-content p { font-size: 16px; line-height: 1.8; color: #444; margin-bottom: 15px; }
+        .skill-content ul { margin-left: 20px; margin-bottom: 20px; line-height: 1.8; color: #444; }
+        .skill-content ul li { margin-bottom: 8px; }
+        .skill-content strong { color: #2c3e50; }
+        .skill-content code { 
+            background: #e8ecf1; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            color: #2c3e50; 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+
+        /* Boîtes d'exemples */
+        .example-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2c3e50;
+            padding: 15px 20px;
+            margin: 15px 0 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .example-box h4 { color: #2c3e50; margin-bottom: 5px; }
+        .example-box p { margin-bottom: 0; font-size: 15px; }
+
+        /* ============================================ */
+        /* DESSINS CSS : COMPARAISON DES PLATEFORMES  */
+        /* ============================================ */
+        .platform-comparison {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px 0 30px 0;
+            flex-wrap: wrap;
+        }
+        .platform-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            width: 180px;
+            border: 2px solid #e4e7eb;
+            transition: transform 0.3s ease;
+        }
+        .platform-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .platform-card .icon-wrap {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .platform-card h4 { margin-bottom: 5px; color: #2c3e50; }
+        .platform-card p { font-size: 13px; color: #777; }
+        
+        .p-web { border-color: #3498db; }
+        .p-mobile { border-color: #f1c40f; }
+        .p-desktop { border-color: #2c3e50; background: #f0f4f8; }
+
+        /* Schéma d'une fenêtre d'application Desktop */
+        .desktop-ui-demo {
+            background: #f0f4f8;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid #2c3e50;
+            position: relative;
+        }
+        .window-titlebar {
+            background: #2c3e50;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .window-titlebar span { font-weight: 600; font-size: 14px; }
+        .window-controls span { margin-left: 10px; cursor: pointer; font-size: 12px; }
+        .window-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 10px;
+        }
+        .window-btn {
+            background: #e4e7eb;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .window-btn:hover { background: #2c3e50; color: #fff; }
+        .window-input {
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 5px;
+            background: #fff;
+            text-align: center;
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) { 
+            .skill-content { padding: 25px; } 
+            .skill-hero-image { height: 180px; }
+            .skill-header { flex-direction: column; text-align: center; }
+            .window-content { grid-template-columns: 1fr; }
+            .window-input { grid-column: span 1; }
+        }
+        @media (max-width: 576px) { 
+            nav { display: none; } 
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN (DESKTOP) -->
+    <div id="splash-screen">
+        <h1>Bienvenue dans la <span>Programmation Desktop</span> !</h1>
+        <p>Créez des applications qui tournent directement sur votre ordinateur.<br>Préparez-vous à dessiner des interfaces graphiques.</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">4</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="projet2.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au projet L2</a>
+    </div>
+
+    <div class="skill-detail-wrapper">
+        <div class="skill-card anim-fade-in">
+            
+            <!-- IMAGE EN HAUT -->
+            <div class="skill-hero-image">
+                <div style="position: absolute; z-index: 1; font-size: 80px; color: rgba(255,255,255,0.1); font-weight: 900;">🖥️</div>
+                <img src="./img/david_3.jpg" alt="Apprentissage Programmation Desktop">
+                <span class="hero-badge"><i class="fa-solid fa-desktop"></i> L2 - Applications Bureau</span>
+            </div>
+
+            <div class="skill-content">
+                <div class="skill-header">
+                    <i class="fa-solid fa-desktop"></i>
+                    <h1>Programmation Desktop & Interfaces Graphiques</h1>
+                </div>
+
+                <h3><i class="fa-solid fa-arrow-right-arrow-left" style="color:#2c3e50;"></i> C'est quoi une application Desktop ?</h3>
+                <p>
+                    Une <strong>application Desktop</strong> (ou application de bureau) est un logiciel qui s'installe directement sur le disque dur d'un ordinateur (PC ou Mac) et s'exécute localement, sans avoir besoin d'Internet pour fonctionner. 
+                    Exemples concrets : <strong>Microsoft Word</strong>, <strong>Adobe Photoshop</strong>, ou <strong>Visual Studio Code</strong>.
+                </p>
+
+                <h3><i class="fa-solid fa-list" style="color:#2c3e50;"></i> La différence avec le Web et le Mobile</h3>
+                <p>Pour bien comprendre, voici un petit dessin comparatif :</p>
+                
+                <div class="platform-comparison anim-fade-in anim-delay-1">
+                    <div class="platform-card p-web">
+                        <div class="icon-wrap" style="color: #3498db;"><i class="fa-solid fa-globe"></i></div>
+                        <h4>Applications Web</h4>
+                        <p>Nécessitent un navigateur et une connexion Internet.</p>
+                    </div>
+                    <div class="platform-card p-mobile">
+                        <div class="icon-wrap" style="color: #f1c40f;"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                        <h4>Applications Mobile</h4>
+                        <p>Tournent sur smartphones (Android/iOS). Tactile et portables.</p>
+                    </div>
+                    <div class="platform-card p-desktop">
+                        <div class="icon-wrap" style="color: #2c3e50;"><i class="fa-solid fa-desktop"></i></div>
+                        <h4>Applications Desktop</h4>
+                        <p>Installées sur le PC. Puissantes, rapides, pas besoin d'Internet.</p>
+                    </div>
+                </div>
+
+                <h3><i class="fa-solid fa-paintbrush" style="color:#2c3e50;"></i> Dessinons une interface graphique (GUI)</h3>
+                <p>
+                    Contrairement à la programmation en console (où l'on tape du texte noir sur fond blanc), la programmation Desktop utilise des <strong>Interfaces Graphiques (GUI)</strong>. 
+                    On utilise des bibliothèques comme <strong>Swing (Java)</strong>, <strong>WPF (C#)</strong> ou <strong>Qt (C++)</strong>.
+                    Voici à quoi ressemble une fenêtre d'application Desktop (que nous avons appris à construire) :
+                </p>
+
+                <div class="desktop-ui-demo anim-fade-in anim-delay-2">
+                    <div class="window-titlebar">
+                        <span>📂 Mon Application - Gestion des étudiants</span>
+                        <div class="window-controls">
+                            <span>—</span> <span>□</span> <span style="color: #e74c3c;">✕</span>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="window-input">Nom de l'étudiant : <input type="text" placeholder="Saisir ici" style="border:1px solid #ccc; padding: 5px; border-radius: 5px; width: 60%;"></div>
+                        <div class="window-btn"><i class="fa-solid fa-plus"></i> Ajouter</div>
+                        <div class="window-btn"><i class="fa-solid fa-pen-to-square"></i> Modifier</div>
+                        <div class="window-btn"><i class="fa-solid fa-trash"></i> Supprimer</div>
+                        <div class="window-btn" style="background: #2c3e50; color:#fff; grid-column: span 2;"><i class="fa-solid fa-list"></i> Afficher la liste</div>
+                    </div>
+                </div>
+                <p style="font-size: 14px; color: #777; text-align: center;">Exemple visuel d'une interface créée avec une bibliothèque graphique comme Swing.</p>
+
+                <h3><i class="fa-solid fa-gears" style="color:#2c3e50;"></i> Les concepts fondamentaux appris</h3>
+                <ul>
+                    <li><strong>Fenêtres (JFrame) :</strong> Le conteneur principal de l'application. C'est la "toile" sur laquelle on va dessiner.</li>
+                    <li><strong>Composants (Widgets) :</strong> Les boutons (<code>JButton</code>), les champs de texte (<code>JTextField</code>), les étiquettes (<code>JLabel</code>).</li>
+                    <li><strong>Gestionnaires de disposition (Layouts) :</strong> Comment organiser les composants dans la fenêtre (ex: <code>BorderLayout</code>, <code>GridLayout</code>, <code>FlowLayout</code>).</li>
+                    <li><strong>Événements (ActionListener) :</strong> Lier les clics de souris à des actions (ex: cliquer sur "Ajouter" déclenche une fonction).</li>
+                    <li><strong>Modèle MVC (Modèle-Vue-Contrôleur) :</strong> Une architecture qui sépare les données (Modèle) de l'interface (Vue) et de la logique (Contrôleur). C'est très utilisé en Java Swing.</li>
+                </ul>
+
+                <div class="example-box">
+                    <h4>Exemple de code Java Swing (Le bouton qui dit Bonjour) :</h4>
+                    <p><code>JButton btn = new JButton("Cliquez-moi !");<br>
+                    btn.addActionListener(e -> {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;JOptionPane.showMessageDialog(null, "Bonjour !");<br>
+                    });</code></p>
+                </div>
+
+                <h3><i class="fa-solid fa-check-double" style="color:#2c3e50;"></i> Pourquoi la Prog. Desktop est toujours d'actualité</h3>
+                <p>
+                    Beaucoup de personnes pensent que les applications Web ont tué les applications Desktop. Mais c'est faux ! 
+                    Les applications Desktop restent indispensables pour les logiciels qui nécessitent une <strong>puissance de calcul locale</strong> (montage vidéo, jeux vidéo, développement logiciel, CAO). 
+                    Apprendre à créer des interfaces graphiques m'a permis de comprendre comment les logiciels "dialoguent" avec l'utilisateur.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
+        const timerInterval = setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                if(countdownElement) countdownElement.textContent = timeLeft;
+            }
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+                setTimeout(() => { splash.style.display = 'none'; }, 800);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

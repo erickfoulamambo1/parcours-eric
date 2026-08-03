@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - ISC BENI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL ET MENU --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f7fb; color: #333; overflow-x: hidden; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #007bff; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #007bff; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #007bff; }
+        .btn-cta { background: #007bff; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); }
+        .btn-cta:hover { background: #0056b3; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #ffc107; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #ffc107; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #ffc107; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #ffc107; border: none; padding: 0 15px; cursor: pointer; color: #000; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #e0a800; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #ffc107; color: #000; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4); }
+
+        /* ===================================================== */
+        /* --- STYLE SPÉCIFIQUE PAGE CONTACT (EN BLOCS) --- */
+        /* ===================================================== */
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container {
+            max-width: 1200px;
+            margin: 30px auto 0 auto;
+            padding: 0 20px;
+        }
+        .btn-retour {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #e9ecef;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-retour:hover {
+            background: #0056b3;
+            color: #fff;
+            transform: translateX(-5px);
+        }
+
+        /* --- SECTION HERO BLEUE (Titre) --- */
+        .contact-hero {
+            background: #0a1930; /* Bleu très foncé */
+            padding: 60px 20px 80px 20px;
+            text-align: center;
+            color: white;
+            margin-top: 0;
+        }
+        .contact-hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 10px; }
+        .contact-hero span { color: #007bff; }
+        .contact-hero p { color: #b0c4de; font-size: 16px; }
+
+        /* --- SECTION 1 : 4 CARTES D'INFO --- */
+        .info-cards-container {
+            max-width: 1100px;
+            margin: -50px auto 60px auto; /* Remonte sur le Hero bleu */
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .info-card {
+            background: #fff;
+            padding: 30px 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        .info-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.12); }
+        .info-card i {
+            font-size: 28px;
+            color: #0056b3;
+            background: #eef5ff;
+            padding: 15px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+        .info-card h4 { font-size: 16px; color: #333; margin-bottom: 8px; }
+        .info-card p { font-size: 13px; color: #777; line-height: 1.5; }
+
+        /* --- SECTION 2 : FORMULAIRE + MAP --- */
+        .contact-main-container {
+            max-width: 1100px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            padding: 40px;
+        }
+        .form-side h2 { font-size: 28px; color: #0a1930; margin-bottom: 5px; }
+        .form-side p { font-size: 14px; color: #777; margin-bottom: 25px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #333; margin-bottom: 5px; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 12px 15px;
+            border: 1px solid #e4e7eb; border-radius: 8px;
+            background: #f9f9f9; outline: none; transition: 0.3s; font-size: 14px;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: #0056b3; background: #fff; box-shadow: 0 0 0 3px rgba(0,86,179,0.1); }
+        .form-group textarea { height: 120px; resize: vertical; }
+        .btn-send {
+            background: #0056b3; color: #fff;
+            padding: 12px 30px; border: none; border-radius: 30px;
+            font-weight: 700; font-size: 14px; cursor: pointer;
+            transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-send:hover { background: #003d82; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3); }
+
+        .map-side iframe {
+            width: 100%; height: 100%; min-height: 300px;
+            border-radius: 15px; border: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* --- SECTION 3 : READY TO WORK (CTA) --- */
+        .cta-section {
+            background: #0a1930;
+            max-width: 1100px;
+            margin: 0 auto 50px auto;
+            padding: 60px 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 15px 40px rgba(10,25,48,0.3);
+        }
+        .cta-section h2 { font-size: 32px; margin-bottom: 10px; }
+        .cta-section p { color: #b0c4de; margin-bottom: 25px; }
+        .btn-cta-2 {
+            background: #007bff; color: #fff;
+            padding: 14px 35px; border-radius: 30px; text-decoration: none;
+            font-weight: 700; transition: 0.3s; display: inline-block;
+        }
+        .btn-cta-2:hover { background: #0056b3; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,123,255,0.3); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 992px) {
+            .info-cards-container { grid-template-columns: repeat(2, 1fr); }
+            .contact-main-container { grid-template-columns: 1fr; }
+            .map-side iframe { min-height: 250px; }
+            .footer-container { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 576px) {
+            nav { display: none; }
+            .info-cards-container { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+            .contact-hero h1 { font-size: 30px; }
+            .cta-section { padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MENU -->
+    <div id="header-container"></div>
+
+    <!-- BOUTON RETOUR -->
+    <div class="back-button-container anim-fade-in">
+        <a href="index.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour à l'accueil</a>
+    </div>
+
+    <!-- SECTION TITRE (BLEU FONCÉ) -->
+    <section class="contact-hero anim-fade-in">
+        <h1>Contactez <span>Nous</span></h1>
+        <p>Une question sur mon parcours ? Une proposition de collaboration ? N'hésitez pas à me contacter.</p>
+    </section>
+
+    <!-- BLOC 1 : 4 CARTES D'INFORMATIONS -->
+    <div class="info-cards-container anim-fade-in">
+        <div class="info-card">
+            <i class="fa-solid fa-location-dot"></i>
+            <h4>Localisation</h4>
+            <p>ISC BENI, Ville de Beni,Q.Tamende<br>République Démocratique du Congo</p>
+        </div>
+        <div class="info-card">
+            <i class="fa-solid fa-phone"></i>
+            <h4>Numéro</h4>
+            <p>+243 991932413<br>+243 852097434</p>
+        </div>
+        <div class="info-card">
+            <i class="fa-solid fa-envelope"></i>
+            <h4>Email</h4>
+            <p>erickfoulamambo1@gmail.com<br>iscbeni@.com</p>
+        </div>
+        <div class="info-card">
+            <i class="fa-regular fa-clock"></i>
+            <h4>Disponibilité</h4>
+            <p>Lun - Ven : 08:00 - 17:00<br>Samedi : Fermé</p>
+        </div>
+    </div>
+
+    <!-- BLOC 2 : FORMULAIRE + MAP (CORRIGÉ ET BIEN STRUCTURÉ) -->
+    <div class="contact-main-container anim-fade-in">
+        
+        <!-- Côté Gauche : Le Formulaire -->
+        <div class="form-side">
+            <h2>Envoyez moi un message</h2>
+            <p>Je vous répondrai dans les plus brefs délais.</p>
+            
+            <!-- LE FORMULAIRE AVEC TA CLÉ WEB3FORMS -->
+            <form action="https://api.web3forms.com/submit" method="POST">
+                
+                <!-- ICI C'EST TA CLÉ UNIQUE -->
+                <input type="hidden" name="access_key" value="f5d194d9-9723-448c-93ec-9c435136f983">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Votre Nom</label>
+                        <input type="text" name="name" placeholder="Votre nom complet" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Votre Email</label>
+                        <input type="email" name="email" placeholder="nom@exemple.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Votre Téléphone</label>
+                    <input type="tel" name="phone" placeholder="+243 000 000 000">
+                </div>
+                <div class="form-group">
+                    <label>Votre Message</label>
+                    <textarea name="message" placeholder="Écrivez votre message ici..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-send">Envoyer le message <i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+        
+        <!-- Côté Droit : La Carte Google Maps -->
+        <div class="map-side">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.949659483757!2d29.454492514778793!3d0.49518846398990155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x17822b73be6f43e9%3A0xa398d41f6a6256ea!2sISC%20BENI!5e0!3m2!1sfr!2scd!4v1712500000000!5m2!1sfr!2scd" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+    </div>
+
+    <!-- BLOC 3 : PRÊT À TRAVAILLER ENSEMBLE -->
+    <div class="cta-section anim-fade-in">
+        <h2>Prêt à travailler ensemble ?</h2>
+        <p>Discutons de vos idées et de la manière dont je peux contribuer à vos projets. Remplissez 
+            ces champs ci-haut puis envoyé pour qu'on discutes sur mail soit accéder à ma page d'accueil
+            puis clique sur le logo WhatsApp pour la communication directe. Merci d'avoir contacter notre site. 
+        </p> <hr><br>
+        <marquee behavior="" direction="">Même l'avion marche avant de voler. Ne laissez personne vous presser, la vie est un processus. 
+        </marquee>
+        <a href="contact.html" class="btn-cta-2">Contactez moi aujourd'hui <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+    <!-- PIED DE PAGE -->
+    <div id="footer-container"></div>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+        fetch('footer.html').then(r => r.text()).then(d => document.getElementById('footer-container').innerHTML = d);
+    </script>
+</body>
+</html>

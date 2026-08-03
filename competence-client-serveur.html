@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compétence Client-Serveur - Mon Parcours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #006064 0%, #00bcd4 100%); /* Dégradé Bleu Océan */
+            color: #333; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .anim-delay-1 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .anim-delay-2 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
+        .anim-slide { animation: slideInLeft 0.8s ease-out forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN (BIENVENUE CLIENT-SERVEUR) --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #006064 0%, #00bcd4 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #ffeb3b; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #ffeb3b; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #00bcd4; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #00bcd4; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #00bcd4; }
+        .btn-cta { background: #00bcd4; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 188, 212, 0.2); }
+        .btn-cta:hover { background: #006064; transform: translateY(-2px); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #00bcd4; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #00bcd4; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #00bcd4; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #00bcd4; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #00bcd4; border: none; padding: 0 15px; cursor: pointer; color: #fff; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #006064; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #00bcd4; color: #fff; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #006064; transform: translateY(-3px); }
+
+        /* ===================================================== */
+        /* --- DESIGN PAGE CLIENT-SERVEUR --- */
+        /* ===================================================== */
+        .skill-detail-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .skill-card { 
+            background: #ffffff;
+            border-radius: 30px; 
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* IMAGE EN HAUT */
+        .skill-hero-image {
+            width: 100%;
+            height: 250px; 
+            overflow: hidden;
+            position: relative;
+            background: #006064;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .skill-hero-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.6;
+            transition: transform 0.6s ease;
+        }
+        .skill-hero-image:hover img { transform: scale(1.05); opacity: 0.8; }
+        .hero-badge {
+            position: absolute;
+            bottom: 20px; left: 20px; 
+            background: rgba(255, 255, 255, 0.95);
+            color: #006064; padding: 8px 18px; border-radius: 30px;
+            font-size: 13px; font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Contenu texte */
+        .skill-content { padding: 50px; }
+        
+        .skill-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px; 
+            border-bottom: 1px solid #e4e7eb;
+        }
+        .skill-header i { 
+            font-size: 50px; 
+            color: #00bcd4; 
+            background: #e0f7fa; 
+            padding: 15px; 
+            border-radius: 15px;
+        }
+        .skill-header h1 { font-size: 36px; color: #006064; }
+
+        .skill-content h3 { 
+            color: #006064; 
+            margin-top: 30px; 
+            margin-bottom: 15px; 
+            font-size: 22px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .skill-content h3 i { font-size: 20px; background: #e0f7fa; padding: 8px; border-radius: 8px; color: #00bcd4; }
+        
+        .skill-content p { font-size: 16px; line-height: 1.8; color: #444; margin-bottom: 15px; }
+        .skill-content ul { margin-left: 20px; margin-bottom: 20px; line-height: 1.8; color: #444; }
+        .skill-content ul li { margin-bottom: 8px; }
+        .skill-content strong { color: #006064; }
+        .skill-content code { 
+            background: #e0f7fa; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            color: #00bcd4; 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+
+        /* Boîtes d'exemples */
+        .example-box {
+            background: #f8f9fa;
+            border-left: 4px solid #00bcd4;
+            padding: 15px 20px;
+            margin: 15px 0 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .example-box h4 { color: #006064; margin-bottom: 5px; }
+        .example-box p { margin-bottom: 0; font-size: 15px; }
+
+        /* Schéma Client-Serveur Visuel */
+        .cs-schema {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px 0 30px 0;
+            flex-wrap: wrap;
+        }
+        .cs-box {
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 2px solid #e4e7eb;
+            min-width: 120px;
+        }
+        .cs-box.client { border-color: #00bcd4; color: #006064; }
+        .cs-box.serveur { border-color: #cc2b2b; color: #b71c1c; }
+        .cs-arrow { font-size: 24px; color: #ffeb3b; font-weight: bold; }
+        .cs-arrow-down { font-size: 24px; color: #00bcd4; font-weight: bold; }
+
+        @media (max-width: 768px) { 
+            .skill-content { padding: 25px; } 
+            .skill-hero-image { height: 180px; }
+            .skill-header { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 576px) { 
+            nav { display: none; } 
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+            .cs-schema { flex-direction: column; gap: 15px; }
+            .cs-arrow, .cs-arrow-down { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN (CLIENT-SERVEUR) -->
+    <div id="splash-screen">
+        <h1>Bienvenue dans le monde <span>Client-Serveur</span> !</h1>
+        <p>Le modèle qui fait tourner Internet.<br>Préparez-vous à comprendre le dialogue entre les machines.</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">4</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="projet2.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au projet L2</a>
+    </div>
+
+    <div class="skill-detail-wrapper">
+        <div class="skill-card anim-fade-in">
+            
+            <!-- IMAGE EN HAUT -->
+            <div class="skill-hero-image">
+                <div style="position: absolute; z-index: 1; font-size: 80px; color: rgba(255,255,255,0.1); font-weight: 900;">🖥️ ↔️ 🌐</div>
+                <img src="./img/rx.jpg" alt="Apprentissage Client-Serveur">
+                <span class="hero-badge"><i class="fa-solid fa-network-wired"></i> L2 - Architecture Réseau</span>
+            </div>
+
+            <div class="skill-content">
+                <div class="skill-header">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <h1>Programmation Client-Serveur</h1>
+                </div>
+
+                <h3><i class="fa-solid fa-comment-dots"></i> Une analogie de la vie quotidienne</h3>
+                <p>
+                    Imaginez que vous allez dans un <strong>restaurant</strong>. Vous êtes le <strong>Client</strong>. Vous avez un besoin (manger). 
+                    Le serveur du restaurant et le cuisinier sont le <strong>Serveur</strong>. Vous lui donnez une <strong>requête</strong> (la commande). 
+                    Le serveur traite votre demande, prépare le plat, et vous renvoie une <strong>réponse</strong> (le plat).
+                    <br><br>
+                    Dans l'informatique, c'est exactement pareil. Le Client (votre navigateur) envoie une Requête (via l'URL). Le Serveur (une machine distante) traite cette requête, interroge une base de données si besoin, et renvoie une Réponse (une page HTML).
+                </p>
+
+                <h3><i class="fa-solid fa-diagram-project"></i> Le schéma fondamental du modèle</h3>
+                <div class="cs-schema anim-slide">
+                    <div class="cs-box client">
+                        <i class="fa-solid fa-laptop" style="font-size: 30px; display: block; margin-bottom: 5px;"></i>
+                        <strong>CLIENT</strong><br>
+                        <span style="font-size: 12px; font-weight: 400;">(Navigateur / App)</span>
+                    </div>
+                    <div class="cs-arrow">⬇️</div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 600; color: #00bcd4; background: #e0f7fa; padding: 3px 10px; border-radius: 10px;">Requête HTTP</span>
+                        <div class="cs-arrow-down">⬆️</div>
+                        <span style="font-size: 12px; font-weight: 600; color: #cc2b2b; background: #fde8e8; padding: 3px 10px; border-radius: 10px;">Réponse HTTP</span>
+                    </div>
+                    <div class="cs-arrow">⬆️</div>
+                    <div class="cs-box serveur">
+                        <i class="fa-solid fa-server" style="font-size: 30px; display: block; margin-bottom: 5px;"></i>
+                        <strong>SERVEUR</strong><br>
+                        <span style="font-size: 12px; font-weight: 400;">(Machine distante + BDD)</span>
+                    </div>
+                </div>
+
+                <h3><i class="fa-solid fa-code"></i> Les protocoles de communication (HTTP)</h3>
+                <p>
+                    Pour que le Client et le Serveur se comprennent, ils utilisent un langage commun appelé <strong>Protocole</strong>. 
+                    Sur le web, le protocole le plus utilisé est le <strong>HTTP (HyperText Transfer Protocol)</strong>.
+                    <br>
+                    Quand vous tapez une adresse dans votre navigateur, vous envoyez une <strong>Requête HTTP</strong>. Le serveur lit cette requête, comprend ce que vous voulez, et vous renvoie une <strong>Réponse HTTP</strong> (avec un code de statut comme 200 pour "Tout va bien" ou 404 pour "Page introuvable").
+                </p>
+                <div class="example-box">
+                    <h4>Exemple d'échange HTTP simple :</h4>
+                    <p><strong>Client :</strong> "GET /ma-page.html" (Je veux le fichier ma-page.html)<br>
+                    <strong>Serveur :</strong> "200 OK" (Voici le contenu de la page)...</p>
+                </div>
+
+                <h3><i class="fa-solid fa-list-check"></i> Les notions fondamentales acquises</h3>
+                <ul>
+                    <li><strong>Architecture 2-Tiers :</strong> Comprendre la séparation entre l'interface (Client) et la logique/stockage (Serveur).</li>
+                    <li><strong>Méthodes HTTP :</strong> Différence entre <code>GET</code> (pour lire des données) et <code>POST</code> (pour envoyer des données, comme dans un formulaire).</li>
+                    <li><strong>Cookies et Sessions :</strong> Apprendre comment le serveur peut "se souvenir" du client grâce aux sessions PHP et aux cookies.</li>
+                    <li><strong>Requêtes AJAX (Asynchronous) :</strong> Introduction à la communication asynchrone (pour envoyer des données sans recharger la page).</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-handshake"></i> Le lien avec le PHP et le SQL</h3>
+                <p>
+                    C'est ici que tout se connecte ! Le <strong>PHP</strong> est le langage qui tourne sur le Serveur. Il reçoit les requêtes du Client, 
+                    se connecte à la <strong>Base de Données (SQL)</strong> pour récupérer les informations, les traite, et renvoie le résultat final au Client sous forme de HTML.
+                    <br><br>
+                    <em>Client (Navigateur) ➡️ Requête HTTP ➡️ Serveur (PHP) ➡️ Base de Données (SQL) ➡️ Réponse HTTP ➡️ Client (Navigateur)</em>
+                </p>
+
+                <h3><i class="fa-solid fa-check-double"></i> Pourquoi c'est l'architecture dominante</h3>
+                <p>
+                    Le modèle Client-Serveur est la colonne vertébrale d'Internet. Comprendre ce flux (Requête ➡️ Traitement ➡️ Réponse) est essentiel pour tout développeur web. 
+                    Cela permet de comprendre comment les données voyagent, comment sécuriser les échanges, et comment rendre les applications plus rapides et performantes.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+
+        // --- COMPTE À REBOURS SPLASH SCREEN ---
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
+
+        const timerInterval = setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                if(countdownElement) countdownElement.textContent = timeLeft;
+            }
+            
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 800);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

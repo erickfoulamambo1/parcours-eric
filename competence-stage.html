@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stage UBUTU CYBER NET - Mon Parcours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f7fb; color: #333; overflow-x: hidden; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .anim-delay-1 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .anim-delay-2 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN (BIENVENUE STAGE) --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #0b2a54 0%, #3b7dd8 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #ffc107; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #ffc107; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #007bff; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #007bff; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #007bff; }
+        .btn-cta { background: #007bff; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); }
+        .btn-cta:hover { background: #0056b3; transform: translateY(-2px); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #0056b3; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #ffc107; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #ffc107; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #ffc107; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #ffc107; border: none; padding: 0 15px; cursor: pointer; color: #000; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #e0a800; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #ffc107; color: #000; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4); }
+
+        /* ===================================================== */
+        /* --- DESIGN SPÉCIFIQUE PAGE STAGE (Médical Style) --- */
+        /* ===================================================== */
+        .skill-detail-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        /* --- SECTION HERO (Bannière) --- */
+        .stage-hero {
+            background: #0b2a54; /* Fond bleu foncé comme l'image */
+            border-radius: 30px;
+            padding: 60px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .stage-hero-left {
+            flex: 1;
+            min-width: 300px;
+        }
+        .stage-hero-left .tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .stage-hero-left h1 { font-size: 42px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; }
+        .stage-hero-left h1 span { color: #ffc107; }
+        .stage-hero-left p { font-size: 16px; opacity: 0.8; max-width: 450px; margin-bottom: 25px; line-height: 1.6; }
+        .stage-hero-left .btn-action {
+            background: #007bff; color: #fff; padding: 12px 25px; border-radius: 30px;
+            text-decoration: none; font-weight: 600; display: inline-block; transition: 0.3s;
+        }
+        .stage-hero-left .btn-action:hover { background: #0056b3; transform: translateY(-2px); }
+        .stage-hero-left .btn-outline {
+            background: transparent; color: #fff; border: 1px solid #fff;
+            padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 600;
+            margin-left: 10px; transition: 0.3s; display: inline-block;
+        }
+        .stage-hero-left .btn-outline:hover { background: #fff; color: #0b2a54; }
+
+        .stage-hero-right {
+            flex: 0 0 300px;
+            text-align: center;
+        }
+        .stage-hero-right img {
+            width: 100%; border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- SECTION COMPÉTENCES (CARTES) --- */
+        .skills-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+        .skills-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .skills-header h2 { font-size: 32px; color: #0b2a54; margin-bottom: 8px; }
+        .skills-header p { color: #666; font-size: 16px; }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .skill-card {
+            background: #fff; padding: 30px 20px; border-radius: 15px; text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #e4e7eb;
+            transition: transform 0.3s ease;
+        }
+        .skill-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .skill-card .icon {
+            width: 50px; height: 50px; background: #eef5ff; color: #007bff;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 20px; margin: 0 auto 15px auto;
+        }
+        .skill-card h3 { font-size: 16px; color: #0b2a54; margin-bottom: 10px; }
+        .skill-card p { font-size: 14px; color: #777; line-height: 1.5; }
+        .skill-card .learn-more {
+            display: inline-block; margin-top: 15px; color: #007bff; font-weight: 600; font-size: 13px; text-decoration: none; transition: 0.3s;
+        }
+        .skill-card .learn-more:hover { transform: translateX(5px); }
+
+        /* --- SECTION SOUVENIRS & ÉQUIPE --- */
+        .memories-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .memory-block {
+            background: #fff; border-radius: 20px; padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid #e4e7eb;
+        }
+        .memory-block h3 { font-size: 22px; color: #0b2a54; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .memory-block h3 i { color: #ffc107; }
+        .memory-block p { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 15px; }
+        .memory-block img {
+            width: 100%; height: 200px; object-fit: cover; border-radius: 10px;
+            transition: transform 0.5s ease;
+        }
+        .memory-block img:hover { transform: scale(1.02); }
+
+        /* --- SECTION PHOTO FINALE --- */
+        .final-photo-section {
+            margin-top: 40px;
+        }
+        .final-photo-section img {
+            width: 100%; height: 300px; object-fit: cover; border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: transform 0.5s ease;
+        }
+        .final-photo-section img:hover { transform: scale(1.01); }
+
+        @media (max-width: 992px) {
+            .skills-grid { grid-template-columns: repeat(2, 1fr); }
+            .memories-section { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .stage-hero { flex-direction: column; text-align: center; padding: 40px 20px; }
+            .stage-hero-left p { margin: 0 auto 25px auto; }
+            .stage-hero-right { flex: 1; }
+            .stage-hero-left .btn-outline { margin-left: 0; margin-top: 10px; }
+        }
+        @media (max-width: 576px) {
+            .skills-grid { grid-template-columns: 1fr; }
+            nav { display: none; }
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+            .final-photo-section img { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <h1>Bienvenue au <span>Stage UBUTU CYBER NET</span> !</h1>
+        <p>Là où la théorie a rencontré la pratique.<br>Préparez-vous à revivre cette expérience professionnelle.</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">4</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="projet2.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au projet L2</a>
+    </div>
+
+    <div class="skill-detail-wrapper">
+        
+        <!-- SECTION HERO -->
+        <div class="stage-hero anim-fade-in">
+            <div class="stage-hero-left">
+                <div class="tag"><i class="fa-solid fa-briefcase"></i> STAGE DE RESPONSABILITÉ</div>
+                <h1>UBUTU CYBER NET<br><span>De l'apprentissage à l'expertise</span></h1>
+                <p>C'est chez <strong>UBUTU CYBER NET</strong> que j'ai véritablement forgé mes compétences techniques. Loin des salles de classe, j'ai découvert les exigences du monde professionnel : rigueur, travail d'équipe, et innovation.</p>
+                <div>
+                    <a href="#skills" class="btn-action">Voir les compétences</a>
+                    <a href="#memories" class="btn-outline">Nos souvenirs</a>
+                </div>
+            </div>
+            <div class="stage-hero-right">
+                <!-- Remplace par une photo de toi ou de l'équipe UBUTU CYBER NET -->
+                <img src="./img/ubuntu6.jpg" alt="Stage UBUTU CYBER NET">
+            </div>
+        </div>
+
+        <!-- SECTION COMPÉTENCES (CARTES) -->
+        <div class="skills-section" id="skills">
+            <div class="skills-header anim-fade-in">
+                <h2>Les compétences approfondies</h2>
+                <p>De la programmation de A à Z, voici ce que j'ai appris sur le terrain.</p>
+            </div>
+
+            <div class="skills-grid anim-fade-in anim-delay-1">
+                <div class="skill-card">
+                    <div class="icon"><i class="fa-solid fa-code"></i></div>
+                    <h3>Développement Web & Logiciel</h3>
+                    <p>Création de sites dynamiques (HTML, CSS, PHP, SQL) et applications de bureau. Gestion des bases de données en environnement réel.</p>
+                    
+                </div>
+
+                <div class="skill-card">
+                    <div class="icon"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>Administration Réseaux</h3>
+                    <p>Configuration de routeurs, switches, et gestion des adresses IP. Mise en place de réseaux locaux (LAN) et résolution de pannes matérielles.</p>
+                   
+                </div>
+
+                <div class="skill-card">
+                    <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>Sécurité Informatique</h3>
+                    <p>Initiation aux bases de la cybersécurité : pare-feu, protection des données, sauvegardes et gestion des accès utilisateurs.</p>
+                   
+                </div>
+
+                <div class="skill-card">
+                    <div class="icon"><i class="fa-solid fa-users-gear"></i></div>
+                    <h3>Support Technique & Dépannage</h3>
+                    <p>Diagnostic et réparation de matériels informatiques, installation de systèmes d'exploitation, et assistance aux utilisateurs finaux.</p>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION SOUVENIRS & ÉQUIPE -->
+        <div class="memories-section" id="memories">
+            <div class="memory-block anim-fade-in anim-delay-2">
+                <h3><i class="fa-solid fa-users"></i> L'équipe UBUTU CYBER NET</h3>
+                <p>L'esprit d'équipe était au cœur de cette expérience. Entre les séances de code à quatre mains, les discussions autour d'un café et les défis techniques relevés ensemble, j'ai appris que le travail collaboratif est la clé de la réussite en entreprise.</p>
+                <!-- Remplace par une photo de l'équipe sur place -->
+                <img src="./img/ubuntu3.jpg" alt="Équipe UBUTU CYBER NET">
+            </div>
+
+            <div class="memory-block anim-fade-in anim-delay-2">
+                <h3><i class="fa-solid fa-laptop-code"></i> De la théorie à la pratique</h3>
+                <p>Travailler sur des projets réels m'a permis de comprendre l'importance des délais, de la qualité du code et de la satisfaction client. J'ai appris à adapter mes connaissances académiques aux contraintes du terrain, une compétence inestimable.</p>
+                <!-- Remplace par une photo en train de coder / réparer -->
+                <img src="./img/ubuntu4.jpg" alt="Apprentissage pratique">
+            </div>
+        </div>
+
+        <!-- SECTION PHOTO FINALE (Souvenir de groupe) -->
+        <div class="final-photo-section anim-fade-in anim-delay-2">
+            <!-- Remplace par une belle photo souvenir de fin de stage -->
+            <img src="./img/ubuntu5.jpg" alt="Photo souvenir UBUTU CYBER NET">
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
+        const timerInterval = setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                if(countdownElement) countdownElement.textContent = timeLeft;
+            }
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+                setTimeout(() => { splash.style.display = 'none'; }, 800);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

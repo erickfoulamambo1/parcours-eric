@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Souvenir - Excursion à KAMPALA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f7fb; color: #333; overflow-x: hidden; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .anim-delay-1 { animation: fadeInUp 0.8s ease-out 0.1s forwards; opacity: 0; }
+        .anim-delay-2 { animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity: 0; }
+        .anim-delay-3 { animation: fadeInUp 0.8s ease-out 0.3s forwards; opacity: 0; }
+        .anim-delay-4 { animation: fadeInUp 0.8s ease-out 0.4s forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #0b2a54 0%, #3b7dd8 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #ffc107; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #ffc107; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #007bff; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #007bff; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #007bff; }
+        .btn-cta { background: #007bff; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); }
+        .btn-cta:hover { background: #0056b3; transform: translateY(-2px); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #0056b3; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #ffc107; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #ffc107; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #ffc107; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #ffc107; border: none; padding: 0 15px; cursor: pointer; color: #000; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #e0a800; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #ffc107; color: #000; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4); }
+
+        /* ===================================================== */
+        /* --- DESIGN SPÉCIFIQUE PAGE KAMPALA --- */
+        /* ===================================================== */
+        .souvenir-detail-wrapper { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        /* --- SECTION HERO (Bannière) --- */
+        .stage-hero {
+            background: #0b2a54; border-radius: 30px; padding: 60px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 30px; color: #fff; position: relative; overflow: hidden;
+        }
+        .stage-hero-left { flex: 1; min-width: 300px; }
+        .stage-hero-left .tag { background: rgba(255, 255, 255, 0.2); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; margin-bottom: 15px; letter-spacing: 1px; }
+        .stage-hero-left h1 { font-size: 42px; font-weight: 800; line-height: 1.2; margin-bottom: 15px; }
+        .stage-hero-left h1 span { color: #ffc107; }
+        .stage-hero-left p { font-size: 16px; opacity: 0.8; max-width: 500px; margin-bottom: 25px; line-height: 1.6; }
+        .stage-hero-left .btn-action { background: #007bff; color: #fff; padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-block; transition: 0.3s; }
+        .stage-hero-left .btn-action:hover { background: #0056b3; transform: translateY(-2px); }
+        .stage-hero-right { flex: 0 0 300px; text-align: center; }
+        .stage-hero-right img { width: 100%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); border: 3px solid rgba(255,255,255,0.1); }
+
+        /* --- SECTION GALERIE (GRILLE DE BLOCS) --- */
+        .gallery-header { text-align: center; margin-bottom: 30px; margin-top: 40px; }
+        .gallery-header h2 { font-size: 32px; color: #0b2a54; margin-bottom: 8px; }
+        .gallery-header p { color: #666; font-size: 16px; }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .gallery-card {
+            background: #fff; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #e4e7eb;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .gallery-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .gallery-card img {
+            width: 100%; height: 180px; object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .gallery-card:hover img { transform: scale(1.02); }
+        .gallery-card .content { padding: 20px; flex-grow: 1; }
+        .gallery-card h3 { font-size: 18px; color: #0b2a54; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .gallery-card h3 i { color: #ffc107; }
+        .gallery-card p { font-size: 14px; color: #555; line-height: 1.6; }
+
+        @media (max-width: 992px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .stage-hero { flex-direction: column; text-align: center; padding: 40px 20px; } .stage-hero-left p { margin: 0 auto 25px auto; } .stage-hero-right { flex: 1; } }
+        @media (max-width: 576px) {
+            nav { display: none; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen">
+        <h1>Bienvenue à <span>KAMPALA</span> !</h1>
+        <p>Le voyage qui nous a ouvert les frontières.<br>Préparez-vous à traverser l'Ouganda avec nous.</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">4</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="projet2.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour à la page précédent </a>
+    </div>
+
+    <div class="souvenir-detail-wrapper">
+        
+        <!-- SECTION HERO -->
+        <div class="stage-hero anim-fade-in">
+            <div class="stage-hero-left">
+                <div class="tag"><i class="fa-solid fa-flag"></i> EXCURSION INTERNATIONALE</div>
+                <h1>Excursion à <span>KAMPALA</span><br>(Ouganda)</h1>
+                <p>Une aventure incroyable au-delà des frontières. De Beni à Kasindi, en passant par la DGM, nous avons roulé vers l'inconnu pour découvrir l'Ouganda, ses universités, ses plages, et sa culture vibrante.</p>
+                <a href="#gallery" class="btn-action">Découvrir la galerie &rarr;</a>
+            </div>
+            <div class="stage-hero-right">
+                <img src="./img/ville.jpg" alt="Photo de groupe à KAMPALA">
+            </div>
+        </div>
+
+        <!-- SECTION GALERIE (27 BLOCS) -->
+        <div class="gallery-header anim-fade-in">
+            <h2>Galerie souvenir de l'aventure</h2>
+            <p>Nos 21 moments préférés de ce voyage exceptionnel.</p>
+        </div>
+
+        <div class="gallery-grid" id="gallery">
+            
+            <!-- 1. Départ -->
+            <div class="gallery-card anim-fade-in anim-delay-1">
+                <img src="./img/bus1.jpg" alt="Départ de Beni">
+                <div class="content">
+                    <h3><i class="fa-solid fa-bus"></i> Le grand départ</h3>
+                    <p>On a pris le bus de bon matin. L'excitation était à son comble. On allait enfin voir autre chose que Beni !</p>
+                </div>
+            </div>
+
+            <!-- 2. DGM Kasindi -->
+            <div class="gallery-card anim-fade-in anim-delay-1">
+                <img src="./img/DGM.jpg" alt="DGM Kasindi">
+                <div class="content">
+                    <h3><i class="fa-solid fa-passport"></i> DGM - La frontière</h3>
+                    <p>Arrivés à Kasindi, passage aux formalités. Tampon sur le passeport, sourire aux lèvres, nous voilà officiellement en route pour l'Ouganda !</p>
+                </div>
+            </div>
+
+            <!-- 3. Traversée -->
+            <div class="gallery-card anim-fade-in anim-delay-1">
+                <img src="./img/gauche_vers.jpg" alt="Route vers Kampala">
+                <div class="content">
+                    <h3><i class="fa-solid fa-road"></i> La route vers l'inconnu</h3>
+                    <p>Premier choc : la conduite à gauche ! On s'est accrochés, mais le paysage était tellement beau qu'on a vite oublié le stress.</p>
+                </div>
+            </div>
+
+            <!-- 4. ISBAT (1) -->
+            <div class="gallery-card anim-fade-in anim-delay-2">
+                <img src="./img/robot.jpg" alt="Université ISBAT">
+                <div class="content">
+                    <h3><i class="fa-solid fa-robot"></i> ISBAT - La robotique (1)</h3>
+                    <p>Visite de l'université ISBAT. On a vu des robots en action. C'est là qu'on a compris qu'il faut se dépêcher d'apprendre !</p>
+                </div>
+            </div>
+
+            <!-- 5. ISBAT (2) -->
+            <div class="gallery-card anim-fade-in anim-delay-2">
+                <img src="./img/microscope.jpg" alt="ISBAT Laboratoire">
+                <div class="content">
+                    <h3><i class="fa-solid fa-microchip"></i> ISBAT - Laboratoire (2)</h3>
+                    <p>Les projets d'IA étaient impressionnants. Des bras articulés, des capteurs... On se croyait dans un film de science-fiction.</p>
+                </div>
+            </div>
+
+            <!-- 6. ISBAT (3) -->
+            <div class="gallery-card anim-fade-in anim-delay-2">
+                <img src="./img/isbat.jpg" alt="ISBAT Groupe">
+                <div class="content">
+                    <h3><i class="fa-solid fa-users"></i> ISBAT - Photo de groupe</h3>
+                    <p>On a pris une photo de groupe devant l'université. On avait l'air de vrais étudiants internationaux. Tellement fiers !</p>
+                </div>
+            </div>
+
+            <!-- 7. Lac Victoria (1) -->
+            <div class="gallery-card anim-fade-in anim-delay-3">
+                <img src="./img/lac1.jpg" alt="Lac Victoria Arrivée">
+                <div class="content">
+                    <h3><i class="fa-solid fa-water-l"></i> Lac Victoria - L'arrivée</h3>
+                    <p>Le plus grand lac d'Afrique s'étendait devant nous. Le bleu de l'eau, le sable fin... On est restés bouche bée.</p>
+                </div>
+            </div>
+
+            <!-- 8. Lac Victoria (2) -->
+            <div class="gallery-card anim-fade-in anim-delay-3">
+                <img src="./img/la dulce.jpg" alt="Lac Victoria Plage">
+                <div class="content">
+                    <h3><i class="fa-solid fa-umbrella-beach"></i> Lac Victoria - Plage (2)</h3>
+                    <p>On a posé nos affaires sur le sable. Le soleil tapait fort, mais le bruit des vagues nous apaisait. Le paradis.</p>
+                </div>
+            </div>
+
+            <!-- 9. Lac Victoria (3) -->
+            <div class="gallery-card anim-fade-in anim-delay-3">
+                <img src="./img/lac2.jpg" alt="Lac Victoria Baignade">
+                <div class="content">
+                    <h3><i class="fa-solid fa-person-swimming"></i> Lac Victoria - Baignade (3)</h3>
+                    <p>On a osé sauter dans l'eau ! L'eau était fraîche, l'ambiance géniale. Un moment de pure liberté entre potes.</p>
+                </div>
+            </div>
+
+            <!-- 10. Lac Victoria (4) -->
+            <div class="gallery-card anim-fade-in anim-delay-3">
+                <img src="./img/lac4.jpg" alt="Lac Victoria Soleil">
+                <div class="content">
+                    <h3><i class="fa-solid fa-sun"></i> Lac Victoria - Soleil (4)</h3>
+                    <p>On s'est séchés au soleil en parlant de tout et de rien. Des discussions profondes sur la vie, l'avenir... et la faim !</p>
+                </div>
+            </div>
+
+            <!-- 11. Lac Victoria (5) -->
+            <div class="gallery-card anim-fade-in anim-delay-3">
+                <img src="./img/lacbleu.jpg" alt="Lac Victoria Coucher">
+                <div class="content">
+                    <h3><i class="fa-solid fa-sunset"></i> Lac Victoria - Coucher (5)</h3>
+                    <p>Le coucher de soleil était magique. Le ciel est devenu orange, l'eau a brillé. Un moment qu'on n'oubliera jamais.</p>
+                </div>
+            </div>
+
+            <!-- 12. Lac Victoria (6) -->
+            <div class="gallery-card anim-fade-in anim-delay-3">
+                <img src="./img/mireil_kampala.jpg" alt="Lac Victoria Potes">
+                <div class="content">
+                    <h3><i class="fa-solid fa-people-group"></i> Lac Victoria - Entre potes (6)</h3>
+                    <p>On a pris des selfies, on a rigolé, on a couru sur le sable. Les meilleurs moments de la vie se passent toujours avec les bonnes personnes.</p>
+                </div>
+            </div>
+
+            <!-- 13. Lac Victoria (7) -->
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/mireil2.jpg" alt="Lac Victoria Soirée">
+                <div class="content">
+                    <h3><i class="fa-solid fa-moon"></i> Lac Victoria - Soirée (7)</h3>
+                    <p>La nuit est tombée, mais on est restés là, à écouter les vagues. Le calme absolu après une journée de folie.</p>
+                </div>
+            </div>
+
+            <!-- 14. Lac Victoria (8) -->
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/mariam.jpg" alt="Lac Victoria Dernière">
+                <div class="content">
+                    <h3><i class="fa-solid fa-camera"></i> Lac Victoria - Dernière photo (8)</h3>
+                    <p>Avant de partir, on a pris une dernière photo pour immortaliser cet endroit. Un lac, des potes, et une promesse de revenir.</p>
+                </div>
+            </div>
+             <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/salle_manger.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> La salle à côté du lac</h3>
+                    <p>On a trouvé une petite salle juste à côté de l'eau. On s'y est installés pour se reposer, manger un morceau, et raconter des blagues. Le spot idéal.</p>
+                </div>
+            </div>
+
+            <!-- 15. Salle à côté du lac -->
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/ericarena.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> Un repos excellent de l'étage</h3>
+                    <p>On a trouvé un joli coin remplit de fraicheurs. On s'y est installés pour se reposer et raconter des blagues. Le spot idéal.</p>
+                </div>
+            </div>
+
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/aubord_du_lac.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> Au bord du lac victoria</h3>
+                    <p>Nous avons vraiment vu la puissance, la fraicheur, la douceur que dégage le lac victoria. Vraiment c'est du wow .</p>
+                </div>
+            </div>
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/mere_dulce.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> En arrivant en UGANDA</h3>
+                    <p>Après les formalités de la DGM, on avait fait un petit repos et voilà ce que ca dégage .</p>
+                </div>
+            </div>
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/makuta.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> Un petit pas vers l'excellance</h3>
+                    <p>Une très magnifique avanture sur un excellent endroit remplit de bonheur, des meilleurs moments..... En un mot nous avions vu le paradis kkk</p>
+                </div>
+            </div>
+
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/mireil_final.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> Fraicheurs du lac</h3>
+                    <p>Une très magnifique avanture , .</p>
+                </div>
+            </div>
+            
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/daniel.jpg" alt="Salle à côté du lac">
+                <div class="content">
+                    <h3><i class="fa-solid fa-building"></i> Au bord du lac victoria et voir les moyen de plonger dedans kkk</h3>
+                    <p>Nous avons vraiment vu quelque NAVIRS au bord du lac mais aussi le gros poisson du lac. Vraiment c'est du wow quand mon pot DANIEL pointe sa main.</p>
+                </div>
+            </div>
+
+            <!-- 16. Marchés -->
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/marché1.jpg" alt="Marchés de Kampala">
+                <div class="content">
+                    <h3><i class="fa-solid fa-store"></i> Les marchés animés</h3>
+                    <p>On s'est promenés dans les marchés locaux. Des couleurs, des odeurs, des vêtements, de l'artisanat... On avait peur de se perdre, mais on a adoré !</p>
+                </div>
+            </div>
+
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/marcher2.jpg" alt="Marchés de Kampala">
+                <div class="content">
+                    <h3><i class="fa-solid fa-store"></i> Les marchés animés</h3>
+                    <p>On s'est promenés dans les marchés locaux. Des couleurs, des odeurs, des vêtements, de l'artisanat... On avait peur de se perdre, mais on a adoré !</p>
+                </div>
+            </div>
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/munyonyo.jpg" alt="visite munyonyo de Kampala">
+                <div class="content">
+                    <h3><i class="fa-solid fa-store"></i> Une visite à MUNYONYO</h3>
+                    <p>On s'est promenés  doucement en souriant et profiter bien de la vie. Ca été vraiment adorable !</p>
+                </div>
+            </div>
+
+             <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/supermarche.jpg" alt="visite munyonyo de Kampala">
+                <div class="content">
+                    <h3><i class="fa-solid fa-store"></i> Une visite dans un supermarché</h3>
+                    <p>On s'est promenés  dans un supermarché pour voir comment eux excécutent leurs commerce. Ca été vraiment adorable !</p>
+                </div>
+            </div>
+
+             <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/groupe_lac.jpg" alt="photo avant d aller">
+                <div class="content">
+                    <h3><i class="fa-solid fa-store"></i> Une photo de famille avant d'aller</h3>
+                    <p>Nous avion pris une photo de fammille avant d'aller faire le shopping. Ca été vraiment adorable !</p>
+                </div>
+            </div>
+
+            <div class="gallery-card anim-fade-in anim-delay-4">
+                <img src="./img/Transport en commun.jpg" alt="Retour en RDC">
+                <div class="content">
+                    <h3><i class="fa-solid fa-flag-checkered"></i> Le grand retour</h3>
+                    <p>La fin de l'aventure. On est rentrés avec des souvenirs plein la tête, des photos plein le téléphone, et l'envie de repartir.</p>
+                    <p>C'est de là que je clotures mon histoire à KAMPALA.....</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
+        const timerInterval = setInterval(() => {
+            if(timeLeft > 0) {
+                timeLeft--;
+                if(countdownElement) countdownElement.textContent = timeLeft;
+            }
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+                setTimeout(() => { splash.style.display = 'none'; }, 800);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

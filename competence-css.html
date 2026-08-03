@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compétence CSS - Mon Parcours</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #1e2a47 0%, #a9b6e6 100%); /* Bleu Nuit vers Violet clair */
+            color: #333; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .anim-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+
+        /* ===================================================== */
+        /* --- SPLASH SCREEN (BIENVENUE CSS) --- */
+        /* ===================================================== */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, #1e2a47 0%, #516bcf 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        #splash-screen.hidden { animation: fadeOut 1s forwards; }
+        #splash-screen h1 { font-size: 48px; margin-bottom: 15px; font-weight: 800; }
+        #splash-screen h1 span { color: #4fa2f5; }
+        #splash-screen p { font-size: 18px; opacity: 0.8; margin-bottom: 30px; }
+        #splash-screen .loader {
+            width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.2);
+            border-top: 5px solid #4fa2f5; border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        #splash-screen .timer-text { margin-top: 20px; font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* --- HEADER --- */
+        header { background: #ffffff; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e4e7eb; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .logo { font-size: 20px; font-weight: 700; color: #0056b3; display: flex; align-items: center; gap: 8px; }
+        nav { display: flex; gap: 25px; }
+        nav a { text-decoration: none; color: #555; font-size: 14px; font-weight: 600; transition: color 0.3s ease; position: relative; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0; background-color: #007bff; transition: width 0.3s; }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        nav a:hover, nav a.active { color: #007bff; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-login { text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: color 0.3s; }
+        .btn-login:hover { color: #007bff; }
+        .btn-cta { background: #007bff; color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2); }
+        .btn-cta:hover { background: #0056b3; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3); }
+
+        /* --- BOUTON RETOUR --- */
+        .back-button-container { max-width: 1200px; margin: 30px auto 0 auto; padding: 0 20px; }
+        .btn-retour { display: inline-flex; align-items: center; gap: 8px; background: #e9ecef; color: #333; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.3s ease; }
+        .btn-retour:hover { background: #0056b3; color: #fff; transform: translateX(-5px); }
+
+        /* --- FOOTER --- */
+        footer { background-color: #0a0a0a; color: #ccc; padding: 60px 40px 20px 40px; margin-top: 50px; }
+        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; padding-bottom: 30px; border-bottom: 1px solid #222; }
+        .footer-col h3 { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: 700; }
+        .footer-col h4 { color: #007bff; font-size: 15px; margin-top: 20px; margin-bottom: 10px; }
+        .footer-col p { font-size: 13px; line-height: 1.6; margin-bottom: 15px; }
+        .footer-contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+        .footer-contact-item i { color: #007bff; width: 20px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col ul li a { color: #bbb; text-decoration: none; font-size: 13px; transition: color 0.3s, padding-left 0.3s; }
+        .footer-col ul li a:hover { color: #007bff; padding-left: 5px; }
+        .newsletter-box { display: flex; flex-direction: column; gap: 10px; }
+        .newsletter-input-group { display: flex; background: #fff; border-radius: 4px; overflow: hidden; }
+        .newsletter-input-group input { border: none; padding: 10px 15px; outline: none; width: 100%; font-size: 13px; }
+        .newsletter-input-group button { background: #007bff; border: none; padding: 0 15px; cursor: pointer; color: #fff; font-weight: bold; transition: background 0.3s; }
+        .newsletter-input-group button:hover { background: #0056b3; }
+        .footer-bottom { max-width: 1200px; margin: 20px auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .footer-bottom p { font-size: 12px; color: #666; }
+        .social-icons { display: flex; gap: 10px; }
+        .social-icons a { display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; background: #ffc107; color: #000; border-radius: 50%; text-decoration: none; font-size: 14px; transition: all 0.3s ease; }
+        .social-icons a:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4); }
+
+        /* ===================================================== */
+        /* --- DESIGN PAGE CSS (2 Colonnes) --- */
+        /* ===================================================== */
+        .skill-detail-wrapper { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .skill-card { 
+            background: #ffffff;
+            border-radius: 30px; 
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            border: 1px solid #e4e7eb;
+        }
+
+        /* Image en haut */
+        .skill-hero-image {
+            width: 100%;
+            height: 280px; 
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #1e2a47, #516bcf);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .skill-hero-image img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .skill-hero-image .css-icon-overlay {
+            position: absolute;
+            font-size: 100px;
+            color: rgba(255,255,255,0.15);
+            font-weight: 900;
+            letter-spacing: -5px;
+            z-index: 1;
+        }
+        .hero-badge {
+            position: absolute;
+            bottom: 20px; left: 20px; 
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e2a47; padding: 8px 18px; border-radius: 30px;
+            font-size: 13px; font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        /* Contenu en 2 colonnes */
+        .skill-content { padding: 50px; }
+        
+        .skill-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px; 
+            border-bottom: 1px solid #e4e7eb;
+        }
+        .skill-header i { 
+            font-size: 50px; 
+            color: #007bff; 
+            background: #eef5ff; 
+            padding: 15px; 
+            border-radius: 15px;
+        }
+        .skill-header h1 { font-size: 36px; color: #0b2a54; }
+
+        .skill-content h3 { 
+            color: #1e2a47; 
+            margin-top: 30px; 
+            margin-bottom: 15px; 
+            font-size: 22px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .skill-content h3 i { font-size: 20px; background: #eef5ff; padding: 8px; border-radius: 8px; color: #007bff; }
+        
+        .skill-content p { font-size: 16px; line-height: 1.8; color: #444; margin-bottom: 15px; }
+        .skill-content ul { margin-left: 20px; margin-bottom: 20px; line-height: 1.8; color: #444; }
+        .skill-content ul li { margin-bottom: 8px; }
+        .skill-content strong { color: #0b2a54; }
+        .skill-content code { 
+            background: #eef5ff; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            color: #0056b3; 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) { 
+            .skill-content { padding: 25px; } 
+            .skill-hero-image { height: 180px; }
+            .skill-header { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 576px) { 
+            nav { display: none; } 
+            .footer-container { grid-template-columns: 1fr; text-align: center; }
+            .footer-contact-item { justify-content: center; }
+            .footer-bottom { flex-direction: column-reverse; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SPLASH SCREEN (CSS) -->
+    <div id="splash-screen">
+        <h1>Bienvenue dans le <span>CSS</span> !</h1>
+        <p>Découvrez l'art de styliser le web avec Eric.<br>Préparez-vous à donner vie à vos pages !</p>
+        <div class="loader"></div>
+        <div class="timer-text">Chargement <span id="countdown">4</span>s</div>
+    </div>
+
+    <div id="header-container"></div>
+
+    <div class="back-button-container anim-fade-in">
+        <a href="projet1.html" class="btn-retour"><i class="fa-solid fa-arrow-left"></i> Retour au projet</a>
+    </div>
+
+    <div class="skill-detail-wrapper">
+        <div class="skill-card anim-fade-in">
+            
+            <!-- IMAGE EN HAUT -->
+            <div class="skill-hero-image">
+                <div class="css-icon-overlay">{ }</div>
+                <!-- Si tu as une image spécifique pour le CSS, tu peux la décommenter ici -->
+                <img src="./img/er_tabar_jr.jpg" alt="Apprentissage CSS" style="opacity: 0.6;">
+                <span class="hero-badge"><i class="fa-brands fa-css3-alt"></i> Bac 1 - Stylisation</span>
+            </div>
+
+            <div class="skill-content">
+                <div class="skill-header">
+                    <i class="fa-brands fa-css3-alt"></i>
+                    <h1>CSS (Cascading Style Sheets)</h1>
+                </div>
+
+                <h3><i class="fa-solid fa-paint-roller"></i> L'art de la mise en forme</h3>
+                <p>
+                    Le <strong>CSS</strong> (Cascading Style Sheets) est le langage qui permet de contrôler l'apparence visuelle des pages web. 
+                    Si le HTML est la structure d'une maison, le CSS en est la peinture, la décoration et l'agencement des meubles.
+                    Durant ma <strong>Licence 1</strong>, j'ai appris à transformer de simples pages HTML en interfaces attrayantes et professionnelles.
+                </p>
+
+                <h3><i class="fa-solid fa-palette"></i> Les notions fondamentales acquises</h3>
+                <p>Le CSS repose sur trois piliers essentiels que j'ai dû maîtriser :</p>
+                <ul>
+                    <li><strong>Sélecteurs :</strong> Apprendre à cibler les éléments HTML (via leurs balises <code>p</code>, leurs classes <code>.ma-classe</code>, ou leurs identifiants <code>#mon-id</code>).</li>
+                    <li><strong>Propriétés et Valeurs :</strong> Utilisation des propriétés comme <code>color</code>, <code>font-size</code>, <code>background-color</code> pour modifier le style.</li>
+                    <li><strong>Cascade et Héritage :</strong> Comprendre comment les styles s'empilent et s'héritent (d'où le nom "Cascading").</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-box-open"></i> Le "Box Model" (Modèle de Boîte)</h3>
+                <p>L'un des concepts les plus importants est le <strong>Box Model</strong>. En CSS, chaque élément est considéré comme une boîte rectangulaire composée de :</p>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 15px; border-left: 4px solid #007bff; margin-bottom: 20px;">
+                    <div style="font-family: monospace; color: #555;">
+                        <div style="border: 2px dashed #007bff; padding: 10px; margin: 10px;">
+                            <strong>Margin</strong> (Espace extérieur)
+                            <div style="border: 2px solid #1e2a47; padding: 10px; margin: 10px; background: #fff;">
+                                <strong>Border</strong> (La bordure)
+                                <div style="border: 2px dashed #e34c26; padding: 10px; margin: 10px;">
+                                    <strong>Padding</strong> (Espace intérieur)
+                                    <div style="background: #eef5ff; padding: 10px; border: 1px solid #0056b3;">
+                                        <strong>Content</strong> (Le texte ou l'image)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p>Comprendre cette boîte est essentiel pour maîtriser les espacements et l'alignement des éléments.</p>
+
+                <h3><i class="fa-solid fa-arrows-spin"></i> Les Mises en Page (Layouts)</h3>
+                <p>Au-delà du style de base, j'ai appris à structurer des pages complexes en utilisant :</p>
+                <ul>
+                    <li><strong>Flexbox :</strong> Pour aligner des éléments en rangées ou en colonnes, et gérer leurs espacements.</li>
+                    <li><strong>CSS Grid :</strong> Pour créer des mises en page en grilles (comme des tableaux mais plus puissants).</li>
+                    <li><strong>Positionnement :</strong> Comprendre les propriétés <code>position: relative</code>, <code>absolute</code>, <code>fixed</code>.</li>
+                    <li><strong>Responsive Design :</strong> Utilisation des <code>@media queries</code> pour adapter le site aux écrans mobiles.</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-star"></i> Pourquoi le CSS est magique</h3>
+                <p>
+                    Le CSS est ce qui transforme un site web "d'école" en un site "professionnel". La capacité de séparer le contenu (HTML) du style (CSS) est une pratique fondamentale du développement web. 
+                    Grâce au CSS, j'ai pu créer les designs épurés, les animations et les dégradés que tu vois sur ce portfolio !
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Mon Parcours</h3>
+                <h4>À propos</h4>
+                <p>Je suis un étudiant passionné, retraçant ici mon parcours depuis la licence 1 à la licence 3 au sein de l'ISC BENI.</p>
+                <h4>Me Contacter</h4>
+                <div class="footer-contact-item"><i class="fa-solid fa-phone"></i><span>+243 991932413</span></div>
+                <div class="footer-contact-item"><i class="fa-solid fa-envelope"></i><span>erickfoulamambo1@gmail.com</span></div>
+            </div>
+            <div class="footer-col">
+                <h4>Informations</h4>
+                <ul>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="#">Blog académique</a></li>
+                    <li><a href="#">Témoignages</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liens utiles</h4>
+                <ul>
+                    <li><a href="projets.html">Mes Projets</a></li>
+                    <li><a href="parcours.html">Mon Parcours</a></li>
+                    <li><a href="conditions.html">Conditions d'utilisation</a></li>
+                    <li><a href="confidentialite.html">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <div class="newsletter-box">
+                    <div class="newsletter-input-group">
+                        <input type="email" placeholder="Entrez votre Email">
+                        <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                    <p style="font-size: 12px; color: #888; margin-top:5px;">Recevez mes actualités académiques.</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>2026 © Mon Parcours Académique. Tous droits réservés.</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/ir_Bulamatari" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://twitter.com/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/TON_NOM_UTILISATEUR" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/ERICK FOULAMAMBO1" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/243991932413" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        fetch('header.html').then(r => r.text()).then(d => document.getElementById('header-container').innerHTML = d);
+
+        // --- COMPTE À REBOURS SPLASH SCREEN ---
+        let countdownElement = document.getElementById('countdown');
+        let timeLeft = 4;
+
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            if(countdownElement) countdownElement.textContent = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                
+                const splash = document.getElementById('splash-screen');
+                splash.classList.add('hidden');
+
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 1000);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

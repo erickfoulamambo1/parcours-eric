@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Mon Parcours Académique</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Accueil / Portfolio</a></li>
+                    <li><a href="admin.html">Administration</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="admin-section">
+            <h1 style="margin-bottom:30px;">Ajouter un événement de mon parcours</h1>
+            
+            <form id="parcoursForm">
+                <label>Niveau Académique :</label>
+                <select id="niveauParcours" style="width:100%; padding:15px; margin-bottom:15px; border:2px solid #e0e0e0; border-radius:10px; font-family:inherit;" required>
+                    <option value="Licence 1 (L1)">Licence 1 (L1)</option>
+                    <option value="Licence 2 (L2)">Licence 2 (L2)</option>
+                    <option value="Licence 3 (L3)">Licence 3 (L3)</option>
+                </select>
+
+                <label>Titre de l'étape / Projet / Cours :</label>
+                <input type="text" id="titreParcours" placeholder="Ex: Introduction à la programmation, Stage de fin de L2..." required>
+                
+                <label>Description des réalisations :</label>
+                <textarea id="descParcours" placeholder="Ce que j'ai appris, les technologies utilisées, les projets réalisés..." rows="5" required></textarea>
+                
+                <label>Image d'illustration :</label>
+                <input type="file" id="imageParcours" accept="image/*" required>
+                
+                <button type="submit">Ajouter à mon portfolio</button>
+            </form>
+        </div>
+        
+        <div class="admin-section" style="margin-top: 20px;">
+             <button onclick="if(confirm('Voulez-vous vraiment tout effacer ?')) { localStorage.removeItem('monParcoursAcademique'); location.reload(); }" class="btn-supprimer">Réinitialiser le portfolio</button>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
